@@ -2,22 +2,34 @@
 
 #include <ostream>
 #include <string_view>
+#include<thread>
+#include<mutex>
+#include <vector>
 
 
 class HelloWorld {
- public:
-  static constexpr std::string_view kHelloPrefix = "Hello, World! From thread ";
+private:
+    std::vector<std::thread> Threads;
+    size_t kThreads;
+    std::mutex mtx;
 
-  HelloWorld(size_t /*n_threads*/)
-  {
-    // Your code
-  }
+public:
+    static constexpr std::string_view kHelloPrefix = "Hello, World! From thread ";
 
-  void SayHello(std::ostream& /*os*/) {
-    // Your code
-  }
+    HelloWorld(size_t n_threads) : kThreads(n_threads) {
+    }
 
- private:
-  // Your code
+    void SayHello(std::ostream& os) {
+        for (size_t i = 0; i != kThreads; ++i) {
+            Threads.emplace_back([&] {
+                mtx.lock();
+                os << kHelloPrefix << std::this_thread::get_id() << "\n";
+                mtx.unlock();
+            });
+        }
+        for (size_t i = 0; i != kThreads; ++i) {
+            Threads[i].join();
+        }
+    }
 };
 
