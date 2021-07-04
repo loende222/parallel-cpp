@@ -30,25 +30,48 @@ class Fork {
 };
 
 class Philosopher {
- public:
-  Philosopher(size_t /*id*/, Fork* /*left_fork*/, Fork* /*right_fork*/) {
-    // Your code
-  }
+public:
+    Philosopher(size_t id, Fork* left_fork, Fork* right_fork) {
+        id_ = id;
+        left_ = left_fork;
+        right_ = right_fork;
+    }
 
-  size_t Id() const {
-    // Your code
-    return -1;
-  }
+    size_t Id() const {
+        return id_;
+    }
 
-  void Eat() {
-    // Your code
-  }
+    void Eat() {
+        if (left_->Id() < right_->Id()) {
+            while (true) {
+                if (left_->TryGet()) {
+                    if (right_->TryGet()) {
+                        break;
+                    } else {
+                        left_->Put();
+                    }
+                }
+            }
+        } else {
+            while (true) {
+                if (right_->TryGet()) {
+                    if (left_->TryGet()) {
+                        break;
+                    } else {
+                        right_->Put();
+                    }
+                }
+            }
+        }
+    }
 
-  void Think() {
-    // Your code
-  }
+    void Think() {
+        left_->Put();
+        right_->Put();
+    }
 
- private:
-  // Your code
+private:
+    size_t id_;
+    Fork* left_;
+    Fork* right_;
 };
-
