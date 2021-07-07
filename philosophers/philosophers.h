@@ -2,7 +2,6 @@
 
 #include <mutex>
 
-
 class Fork {
  public:
   Fork(size_t id) : id_(id) {
@@ -31,10 +30,9 @@ class Fork {
 
 class Philosopher {
 public:
-    Philosopher(size_t id, Fork* left_fork, Fork* right_fork) {
-        id_ = id;
-        left_ = left_fork;
-        right_ = right_fork;
+    Philosopher(size_t id, Fork* left_fork, Fork* right_fork) : id_(id) {
+        left_fork_ = left_fork;
+        right_fork_ = right_fork;
     }
 
     size_t Id() const {
@@ -42,36 +40,22 @@ public:
     }
 
     void Eat() {
-        if (left_->Id() < right_->Id()) {
-            while (true) {
-                if (left_->TryGet()) {
-                    if (right_->TryGet()) {
-                        break;
-                    } else {
-                        left_->Put();
-                    }
-                }
-            }
+        if (left_fork_->Id() < right_fork_->Id()) {
+            left_fork_->Get();
+            right_fork_->Get();
         } else {
-            while (true) {
-                if (right_->TryGet()) {
-                    if (left_->TryGet()) {
-                        break;
-                    } else {
-                        right_->Put();
-                    }
-                }
-            }
+            right_fork_->Get();
+            left_fork_->Get();
         }
     }
 
     void Think() {
-        left_->Put();
-        right_->Put();
+        left_fork_->Put();
+        right_fork_->Put();
     }
 
 private:
-    size_t id_;
-    Fork* left_;
-    Fork* right_;
+    const size_t id_;
+    Fork* left_fork_;
+    Fork* right_fork_;
 };
