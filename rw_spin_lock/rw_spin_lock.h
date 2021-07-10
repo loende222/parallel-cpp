@@ -11,7 +11,7 @@ public:
 
     void LockRead() {
         for (;;) {
-            uint16_t local = counter_.load();
+            uint64_t local = counter_.load();
             if (local & 1) {
                 std::this_thread::yield();
                 continue;
@@ -28,7 +28,7 @@ public:
 
     void LockWrite() {
         for (;;) {
-            uint16_t local = counter_.load();
+            uint64_t local = counter_.load();
             if (local & 1) {
                 std::this_thread::yield();
                 continue;
@@ -47,5 +47,5 @@ public:
     }
 
 private:
-    std::atomic<uint16_t> counter_;
+    std::atomic<uint64_t> counter_;
 };
