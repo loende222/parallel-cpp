@@ -14,18 +14,13 @@ public:
         std::atomic<uint64_t> gen;
     };
 
-    explicit MPMCQueue(uint64_t max_size) {
-        mpmcq_ = new Node[max_size];
+    explicit MPMCQueue(uint64_t max_size) : mpmcq_(max_size){
         for (uint64_t i = 0; i != max_size; ++i) {
             mpmcq_[i].gen.store(i);
         }
         size_ = max_size;
         head_ = 0;
         tail_ = 0;
-    }
-
-    ~MPMCQueue() {
-        delete [] mpmcq_;
     }
 
     bool Push(const T& value) {
@@ -35,6 +30,11 @@ public:
 
             if (cur_head == tail_.load() + size_) {
                 return false;
+            }
+
+            if (mpmcq_[idx].gen != cur_head) {
+                std::this_thread::yield();
+                continue;
             }
 
             if (head_.compare_exchange_weak(cur_head,  cur_head + 1)) {
@@ -68,7 +68,7 @@ public:
     }
 
 public:
-    Node* mpmcq_;
+    std::vector<Node> mpmcq_;
     size_t size_;
     std::atomic<size_t> head_;
     std::atomic<size_t> tail_;
