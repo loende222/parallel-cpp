@@ -39,7 +39,11 @@ public:
             }
         }
 
-        node.next.load()->acquired = true;
+        while (!node.next.load()) {
+            // wait for the next node
+        }
+
+        node.next.load()->acquired.store(true);
     }
 
 private:
