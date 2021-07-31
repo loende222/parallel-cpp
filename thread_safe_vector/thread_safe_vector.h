@@ -16,7 +16,7 @@ public:
     }
 
     size_t Size() const {
-        std::shared_lock r_lock(read_mtx_);
+        std::unique_lock w_lock(write_mtx_);
         return vector_.size();
     }
 
@@ -33,6 +33,6 @@ public:
 private:
     std::vector<T> vector_;
     mutable std::shared_mutex read_mtx_;
-    std::mutex write_mtx_;
+    mutable std::mutex write_mtx_;
 };
 
