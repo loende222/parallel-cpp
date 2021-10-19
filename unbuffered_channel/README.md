@@ -1,11 +1,13 @@
 ## Unbuffered channel
 
-Вам нужно написать аналог [канала (chan) из языка GoLang](https://gobyexample.com/channels). Такой канал не хранит в себе элементы - он лишь способствует тому, чтобы нити передавали элементы друг другу.  
+The analogue of the [channel (chan) from the GoLang language](https://gobyexample.com/channels). Such a channel does not store elements in itself - it only encourages the threads to transfer elements to each other.
 
-При парном вызове `Send` и `Recv` элемент из одной нити должен перейти в другую нить. При этом должно происходить только одно копирование элемента.  
-Метод `Send` ждет либо выбова `Recv`, чтобы передать ему элемент, либо вызова `Close`, означающего, что канал закрыт. Вызов `Send` для закрытого канала должен кидать исключение с текстом `"Channel is closed"`.  
-Метод `Recv` ждет либо выбова `Send`, чтобы взять у него элемент, либо вызова `Close`. Вызов `Recv` для закрытого канала должен возвращать `std::nullopt`, во всех остальных случаях должен возвращаться элемент.
+- When calling `Send` and` Recv` together, an element from one thread must go to another thread. In this case, only one copy of the element should occur.
+
+- The `Send` method waits for either the release of` Recv` to send it an item, or a call to `Close`, which means that the channel is closed. Calling `Send` for a closed channel should throw an exception with the text ` "Channel is closed" `.
+
+- The `Recv` method waits either for a` Send` call to take an element from it, or for a `Close` call. A call to `Recv` on a closed channel must return `std::nullopt`, in all other cases an element must be returned.
 
 ---
 
-Тут вам понадобится использовать несколько переменных типа [`std::condition_variable`](https://en.cppreference.com/w/cpp/thread/condition_variable).
+[`std::condition_variable`](https://en.cppreference.com/w/cpp/thread/condition_variable) is used.
