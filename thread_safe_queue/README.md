@@ -1,9 +1,10 @@
-## Потокобезопасная очередь
+## Thread safe queue
 
-В данной задаче необходимо написать обертку над очередью стандартной библиотеки `std::queue`. Потокобезопасная очередь часто необходима, когда существуют несколько потоков, создающих объекты (называются producers), и несколько потоков, обрабатывающих эти объекты (называюстя consumers).  
 
-В вашей реализации метод `Pop` должен быть блокирующим, то есть дожидаться объекта в очереди и извлекать его. А метод `TryPop` неблокирующим, то есть моментально возвращать объект, если он там был, а иначе возвращать `std::nullopt`.  
+A wrap over `std::queue`. A thread safe queue is often needed when there are multiple threads that create objects (called producers) and multiple threads that process those objects (called consumers).
+
+In the implementation, the `Pop` method is blocking (it waits for an object in the queue and takes it). And the `TryPop` method is non-blocking, it instantly returns the object if it was there, and otherwise returns `std::nullopt`.
 
 ---
 
-В этой задаче вам может пригодится [`std::condition_variable`](https://en.cppreference.com/w/cpp/thread/condition_variable).
+In this implementation an [`std::condition_variable`](https://en.cppreference.com/w/cpp/thread/condition_variable) is used.
