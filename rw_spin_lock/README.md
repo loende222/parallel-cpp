@@ -1,23 +1,20 @@
 ## Read-Write spin lock
 
-При большом количестве читателей и малом количестве писателей лучше использовать read-write блокировки. Это полезно для работы ресурсами, поддерживающими одновременное чтение, но только уникальную запись (Например, весь STL). Один из примеров такой блокировки - [`std::shared_mutex`](https://en.cppreference.com/w/cpp/thread/shared_mutex).  
-Такая блокировка позволяет либо доступ для неограниченного числа читателей, либо доступ для одного писателя.  
+Read-Write spin lock implementation, based on only one [`atomic`](https://en.cppreference.com/w/cpp/atomic/atomic) variable. This blocking allows either access for an unlimited number of readers or access for a single writer.
 
-Вам предстоит реализовать такую блокировку, основанную лишь на одной переменной типа [`atomic`](https://en.cppreference.com/w/cpp/atomic/atomic).  
+Algorithm idea:
+1. An atomic variable of unsigned type is created.
+2. The least significant bit serves as a flag for writing.
+3. The rest of the bits serve as a reader counter.
+4. `LockWrite` sets the writer flag.
+5. `LockRead` increases the reader counter by 1 (that is, increases the variable itself by 2).
 
-Идея алгоритма:
-1. Создается атомарная переменная беззнакового типа.
-2. Младший бит служит флагом для записи.
-3. Остальные биты служат счетчиком читателей.
-4. LockWrite ставит флаг писателя.
-5. LockRead увеличивает счетчик читателей на 1 (то есть увеличивает саму переменную на 2).
 
-Запись для потока доступна только в том случае, если счетчик читателей равен 0, а сам поток выставил флаг писателя.  
-Чтение доступно в том случае, если флаг писателя равен 0.
+Writing is available only if the reader counter is 0 and the thread itself has set the writer flag.
+Reading is available if the writer flag is 0.
 
-При этом приоретет должны иметь писатели. То есть, если существует писатель, который ожидает завершения работы читателей, и приходит новый читатель, то новый читатель не имеет право взять блокировку на чтение и должен дождаться завершения работы писателя/писателей.
+At the same time, writers have a priority. If there is a writer who is waiting for the readers to finish and a new reader arrives, then the new reader is not allowed to take a read lock and must wait for the writer(s) to complete their work.
 
 ---
 
-В данной задаче вам нужно будет использовать [CAS](https://en.wikipedia.org/wiki/Compare-and-swap) операции. В языке C++ это выполняют функции [atomic_compare_exchange_\[weak/strong\]](https://en.cppreference.com/w/cpp/atomic/atomic_compare_exchange) и методы [atomic::compare_exchange_\[weak/strong\]](https://en.cppreference.com/w/cpp/atomic/atomic/compare_exchange).  
-[Пример реализации](https://www.youtube.com/watch?v=dQw4w9WgXcQ) похожего алгоритма на языке Java.
+The solution uses [CAS](https://en.wikipedia.org/wiki/Compare-and-swap) operations. 
