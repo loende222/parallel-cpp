@@ -1,10 +1,9 @@
-## Задача об обедающих философах
+## [Dining philosophers problem](https://en.wikipedia.org/wiki/Dining_philosophers_problem)
 
-[Данная задача](https://en.wikipedia.org/wiki/Dining_philosophers_problem) является классическим примером для иллюстрации проблем синхронизации. Наверняка, вы еще не раз с ней встретитесь.
+### Formulation of the problem:
 
-### Постановка задачи:
-За круговым столом сидят N философов, перед каждым их которых лежит тарелка спагетти, а между каждой парой которых лежит по одной вилке - суммано N вилок. Каждый философ может пребывать в одном из двух состояний:
-- Думающий - философу не нужны вилки, и он просто размышляет свои философские мысли.
-- Голодный - философ хочет есть. В таком случае философ должен взять обе вилки, которые лежат от него слева и справа, и начать есть. После того, как философ решит опять подумать, он должен положить эти вилки обратно на стол.
+There are N philosophers sitting at a round table, each of whom has a plate of spaghetti in front of them, and between each pair of philosophers there is one fork - a total of N forks. Every philosopher can be in one of two states:
+- Thinking - a philosopher does not need forks, and he simply reflects on his philosophical thoughts.
+- Hungry - the philosopher is hungry. In this case, the philosopher must take both forks, which lie to his left and right, and start eating. After the philosopher decides to think again, he must put these forks back on the table.
 
-Вам запрещено менять класс `Fork`. В классе `Philosopher` метод `Eat` должен "брать" со стола соседние вилки, дожидаясь, когда их освободят, если они были заняты. Метод `Think` должен класть вилки обратно на стол.
+In the `Philosopher` class, the `Eat` method must "take" adjacent forks from the table, waiting for them to be released, if they were busy. The `Think` method is to put the forks back on the table.
