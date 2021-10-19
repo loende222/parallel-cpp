@@ -1,8 +1,9 @@
-## Потокобезопасный вектор
+## Thread safe vector
 
-Тут вам нужно написать обертку над `std::vector`, однако единственное изменение данной структуры - добавление нового элемента в конец.  
-Так как элементы никогда не меняются, то читать такой вектор могут сразу много нитей, однако при выполнении `PushBack` может произойти реаллокация, из-за чего на время добавления элемента необходимо сделать так, чтобы чтений не происходило.
+Wrap over `std::vector`, but the only change possible in this data structure is adding a new element to the end.
+
+Since the elements never change, many threads can read such a vector at once, however, when `PushBack` is executed, a reallocation may occur, which is why, at the time of adding an element, it is necessary to make sure that no reads occur.
+
 
 ---
-Вам должны понадобиться [`std::shared_mutex`](https://en.cppreference.com/w/cpp/thread/shared_mutex) и [`std::shared_lock`](https://en.cppreference.com/w/cpp/thread/shared_lock).  
-Также подумайте о том, в каких именно случая происходит реаллокация.
+ [`std::shared_mutex`](https://en.cppreference.com/w/cpp/thread/shared_mutex) and [`std::shared_lock`](https://en.cppreference.com/w/cpp/thread/shared_lock) are used in the implementation.
