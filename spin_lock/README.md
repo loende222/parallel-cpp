@@ -1,7 +1,3 @@
 ## Spin Lock
 
-В данной задаче необходимо реализовать алгоритм [SpinLock'а](https://en.wikipedia.org/wiki/Spinlock).
-
----
-
-Запрещается пользоваться мьютексом.  
+The [SpinLock](https://en.wikipedia.org/wiki/Spinlock) algorithm implementation.
